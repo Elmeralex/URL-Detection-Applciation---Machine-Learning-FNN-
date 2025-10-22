@@ -96,8 +96,6 @@ This dataset contains a balanced mix of **benign and phishing URLs**, allowing r
 | Fold 4 | 3 | 0.9613 | 0.9616 | Early stopped at epoch 6 (best weights from epoch 3) |
 | Fold 5 | 3 | 0.9615 | 0.9620 | Early stopped at epoch 6 (best weights from epoch 3) |
 
----
-
 ### **Cross-Validation Summary**
 
 | **Metric** | **Average** | **Standard Deviation** |
@@ -105,7 +103,6 @@ This dataset contains a balanced mix of **benign and phishing URLs**, allowing r
 | Accuracy | **0.9607** | ±0.0008 |
 | F1-Score | **0.9612** | ±0.0009 |
 
----
 
 ### **Final Model (Trained on Full Dataset)**
 
