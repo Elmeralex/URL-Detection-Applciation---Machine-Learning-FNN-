@@ -1,4 +1,4 @@
-<img width="1440" height="2951" alt="image" src="https://github.com/user-attachments/assets/9cfac368-5603-4a5d-8618-15e65b326156" /># URL-Detection-Applciation---Machine-Learning-FNN-
+# URL-Detection-Applciation---Machine-Learning-FNN-
 URL Detection Application using Machine Learning (FNN)
 
 ## **Introduction**
@@ -13,6 +13,8 @@ The application offers two main input modes:
 ---
 
 ## Application UI/UX
+<img width="334" height="687" alt="image" src="https://github.com/user-attachments/assets/9cfac368-5603-4a5d-8618-15e65b326156" />
+<img width="334" height="687" alt="reuslt_page" src="https://github.com/user-attachments/assets/5158ca75-8a71-4a7b-aaad-be1cffb0030a" />
 
 
 ---
