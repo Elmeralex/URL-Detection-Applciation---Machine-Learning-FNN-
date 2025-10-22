@@ -1,4 +1,4 @@
-# URL-Detection-Applciation---Machine-Learning-FNN-
+<img width="1440" height="2951" alt="image" src="https://github.com/user-attachments/assets/9cfac368-5603-4a5d-8618-15e65b326156" /># URL-Detection-Applciation---Machine-Learning-FNN-
 URL Detection Application using Machine Learning (FNN)
 
 ## **Introduction**
@@ -9,6 +9,11 @@ Its primary goal is to **protect users from phishing and malicious links** witho
 The application offers two main input modes:
 1. **Manual URL Entry** – Users can type or paste a URL for analysis.  
 2. **QR Code Scanning** – Users can scan QR codes containing embedded links.  
+
+---
+
+## Application UI/UX
+
 
 ---
 
