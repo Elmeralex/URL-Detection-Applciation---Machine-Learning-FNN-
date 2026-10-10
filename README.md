@@ -1,131 +1,258 @@
-# URL-Detection-Application---Machine-Learning-FNN-
-URL Detection Application using Machine Learning (FNN)
+<p align="center">
+  <img src="docs/screenshots/logo.png" alt="REST pixel duck logo" width="140">
+</p>
 
-## **Introduction**
+<h1 align="center">REST — URL Detection with Machine Learning (FNN)</h1>
 
-The **URL Detection App** is an Android application developed using **Kotlin with Jetpack Compose** and **TensorFlow Lite**, designed to perform **on-device detection of malicious URLs and QR codes**.  
-Its primary goal is to **protect users from phishing and malicious links** without requiring them to open or interact with suspicious URLs or QR codes.
+<p align="center">
+  An Android app that checks links and QR codes for phishing <b>before</b> you open them.<br>
+  On-device neural network + Google Safe Browsing, with a redesigned "autumn arcade" interface.
+</p>
 
-The application offers two main input modes:
-1. **Manual URL Entry** – Users can type or paste a URL for analysis.  
-2. **QR Code Scanning** – Users can scan QR codes containing embedded links.  
-
----
-
-## Application UI/UX
-<img width="334" height="687" alt="image" src="https://github.com/user-attachments/assets/9cfac368-5603-4a5d-8618-15e65b326156" />
-<img width="334" height="687" alt="reuslt_page" src="https://github.com/user-attachments/assets/5158ca75-8a71-4a7b-aaad-be1cffb0030a" />
-
-
----
-
-## **Model Overview**
-
-The detection model is built using a **Feed-Forward Neural Network (FNN)** — a type of **multi-layer perceptron** implemented via the **Keras deep learning API**, and later converted into a **TensorFlow Lite (.tflite)** format for efficient deployment on Android devices.
-
-Before training, the raw URL dataset undergoes **feature engineering** and **text vectorization** to extract meaningful numerical representations suitable for neural network learning.
+<p align="center">
+  <img alt="Kotlin" src="https://img.shields.io/badge/Kotlin-2.0-7F52FF?logo=kotlin&logoColor=white">
+  <img alt="Jetpack Compose" src="https://img.shields.io/badge/Jetpack%20Compose-Material%203-4285F4?logo=jetpackcompose&logoColor=white">
+  <img alt="TensorFlow Lite" src="https://img.shields.io/badge/TensorFlow%20Lite-2.13-FF6F00?logo=tensorflow&logoColor=white">
+  <img alt="Min SDK" src="https://img.shields.io/badge/minSdk-26-3DDC84?logo=android&logoColor=white">
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
+</p>
 
 ---
 
-### **Feature Engineering**
+## What's new in v2
 
-Referring to the dataset methodology described in DOI: [10.17632/hx4m73v2sf.2](https://doi.org/10.17632/hx4m73v2sf.2), several static URL-based features are derived to capture key URL characteristics that can differentiate benign from malicious links.  
+Version 1 (on the `main` branch) was a working prototype: type or scan a URL and get *Safe* / *Phishing* from an on-device FNN.
+Version 2 keeps the same model and rebuilds everything around it.
 
-| **Feature** | **Description** |
-|--------------|----------------|
-| `url_length` | Total number of characters in the URL |
-| `has_ip_address` | Binary flag (1/0): whether the URL contains an IP address |
-| `dot_count` | Number of “.” characters in the URL |
-| `https_flag` | Binary flag (1/0): whether the URL uses HTTPS |
-| `url_entropy` | Shannon entropy of the URL (higher values = more randomness) |
-| `token_count` | Number of tokens/words in the URL |
-| `subdomain_count` | Number of subdomains in the URL |
-| `query_param_count` | Number of query parameters after “?” |
-| `tld_length` | Length of the top-level domain (e.g., “.com” = 3) |
-| `path_length` | Length of the path segment after the domain |
-| `has_hyphen_in_domain` | Binary flag: whether the domain contains a hyphen (-) |
-| `number_of_digits` | Count of numeric characters in the URL |
-| `tld_popularity` | Binary flag: whether the TLD is a popular one |
-| `suspicious_file_extension` | Binary flag: whether the URL ends with suspicious extensions (.exe, .zip, etc.) |
-| `domain_name_length` | Length of the domain name |
-| `percentage_numeric_chars` | Percentage of numeric characters in the URL |
+| | v1 | v2 (this branch) |
+|---|---|---|
+| **Interface** | Basic Compose screens | Full redesign ("REST"), designed with **Claude Design** and implemented with **Claude Code** |
+| **Verdict** | Safe / Phishing | **Safe / Suspicious / Dangerous**, with a confidence bar |
+| **Detection** | Static only (on-device model) | Static (on-device model) **+ dynamic** (Google Safe Browsing) |
+| **Explanation** | — | *Why this result* card (HTTPS, IP address, subdomains, URL randomness, Safe Browsing match) |
+| **History** | — | Recent checks on Home and a full history screen, stored on the device (Room) |
+| **Opening links** | Open directly | Suspicious and Dangerous links only open after a confirmation dialog |
+| **Theme** | Light | Light, dark, or follow the system |
 
-These features collectively represent the **static characteristics of URLs**, allowing the model to infer suspicious structural patterns without needing live network requests or dynamic execution.
+## Screens
 
----
+Each image shows the screen in light and dark mode.
 
-### **Text Vectorization Using TF-IDF**
+| Home | Scan QR code | Analyzing |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/home.png" width="260"> | <img src="docs/screenshots/scan-qr.png" width="260"> | <img src="docs/screenshots/analyzing.png" width="260"> |
 
-In addition to the handcrafted statistical features, each URL string is also converted into a **numerical vector** using the **Term Frequency–Inverse Document Frequency (TF-IDF)** technique.  
+| Result: Safe | Result: Suspicious | Result: Dangerous |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/result-safe.png" width="260"> | <img src="docs/screenshots/result-suspicious.png" width="260"> | <img src="docs/screenshots/result-dangerous.png" width="260"> |
 
-- The **TF-IDF vectorizer** operates on **character-level n-grams (3–5 characters)**.  
-- This captures subtle textual patterns and obfuscation tactics used in phishing URLs (e.g., “paypa1” instead of “paypal”).  
-- The resulting vectors (up to 5000 features) serve as the model’s **input layer**.
+| History | Profile and theme |
+|:---:|:---:|
+| <img src="docs/screenshots/history.png" width="260"> | <img src="docs/screenshots/profile.png" width="260"> |
 
-This hybrid of **statistical + TF-IDF features** enhances the model’s ability to generalize across unseen URLs.
+<details>
+<summary>v1 interface, for comparison</summary>
 
----
+| Main page | Result page |
+|:---:|:---:|
+| <img src="main_page.jpg" width="260"> | <img src="reuslt_page.png" width="260"> |
 
-### **Neural Network Architecture**
+</details>
 
-The final model architecture is a lightweight **Feed-Forward Neural Network (FNN)** optimized for mobile inference.
+## Features
 
-| **Layer** | **Description** |
-|------------|----------------|
-| Input Layer | Accepts TF-IDF feature vectors |
-| Dense (64 units, ReLU) | Learns high-level URL representations |
-| Dense (32 units, ReLU) | Extracts nonlinear patterns from encoded features |
-| Dense (1 unit, Sigmoid) | Outputs probability of the URL being malicious |
+- **Two ways to check a link:** paste or type a URL, or scan a QR code with the camera (CameraX + ZXing).
+- **On-device detection:** a TensorFlow Lite feed-forward neural network scores every link on the phone. It works offline.
+- **Google Safe Browsing (dynamic detection):** when the online check is on, the link is also looked up against Google's live lists of malware, phishing, unwanted software and harmful apps.
+- **Three-level verdict** with a confidence percentage and a 10-block confidence bar.
+- **Link anatomy:** the scheme, subdomains and registrable domain are highlighted, so look-alike domains like `paypal.com.secure-login.example.net` are easy to spot.
+- **Why this result:** plain-language signals read from the link.
+- **Safe opening:** Suspicious and Dangerous links never open directly. You have to confirm first.
+- **History:** every check is saved on the device and can be reopened or cleared from Profile.
+- **Light / dark / system theme**, fonts bundled with the app (works offline).
 
-The model is trained using **binary cross-entropy loss** and the **Adam optimizer**, with **early stopping** to prevent overfitting.  
-After training, the model is converted to **TensorFlow Lite (.tflite)** format for deployment in the Android app.
+## How a link is checked
 
----
+```mermaid
+flowchart LR
+    A[URL typed or<br>QR code scanned] --> B[TF-IDF<br>vectorizer]
+    B --> C[FNN<br>TensorFlow Lite]
+    C --> D{p malicious}
+    A --> E[Google Safe Browsing<br>v5 urls:search]
+    E --> F{On a<br>threat list?}
+    D --> G[Final verdict]
+    F --> G
+    G --> H[Result screen<br>+ saved to history]
+```
 
-## **Dataset**
+### 1. On-device model (static detection)
 
-The model training and evaluation are based on the **Grambeddings Dataset**:  
-🔗 [https://web.cs.hacettepe.edu.tr/~selman/grambeddings-dataset/](https://web.cs.hacettepe.edu.tr/~selman/grambeddings-dataset/)  
+The FNN outputs the probability that the link is malicious. It is mapped to a verdict:
 
-This dataset contains a balanced mix of **benign and phishing URLs**, allowing robust model generalization and accurate malicious URL detection.
+| Probability malicious | Verdict |
+|---|---|
+| below 0.30 | 🟢 **Safe** — looks safe to open |
+| 0.30 to 0.70 | 🟡 **Suspicious** — open only if you trust the source |
+| 0.70 and above | 🔴 **Dangerous** — don't open this link |
 
----
+The cut-offs live in [`Verdict.kt`](app/src/main/java/com/example/url_detection/data/Verdict.kt).
 
-## **Results**
+### 2. Google Safe Browsing (dynamic detection)
 
-### **5-Fold Cross-Validation Results**
+The model only sees the text of the URL. Google Safe Browsing adds live threat intelligence for links that are already known to be bad.
 
-| **Fold** | **Best Epoch** | **Validation Accuracy** | **Validation F1-Score** | **Training Notes** |
-|-----------|----------------|--------------------------|--------------------------|--------------------|
-| Fold 1 | 3 | 0.9615 | 0.9620 | Early stopped at epoch 6 (best weights from epoch 3) |
-| Fold 2 | 3 | 0.9601 | 0.9603 | Early stopped at epoch 6 (best weights from epoch 3) |
-| Fold 3 | 2 | 0.9595 | 0.9600 | Early stopped at epoch 5 (best weights from epoch 2) |
-| Fold 4 | 3 | 0.9613 | 0.9616 | Early stopped at epoch 6 (best weights from epoch 3) |
-| Fold 5 | 3 | 0.9615 | 0.9620 | Early stopped at epoch 6 (best weights from epoch 3) |
+The two are combined with one rule: **Safe Browsing can only make the verdict stricter.**
 
-### **Cross-Validation Summary**
+- A Safe Browsing match → **Dangerous**, whatever the model says.
+- No match, no network, or online check turned off → the model's verdict stands. New phishing links often aren't on Google's lists yet, so "no match" never overrides the model.
 
-| **Metric** | **Average** | **Standard Deviation** |
-|-------------|-------------|------------------------|
-| Accuracy | **0.9607** | ±0.0008 |
-| F1-Score | **0.9612** | ±0.0009 |
+Details:
 
+- Uses the **v5 `urls:search`** endpoint. It answers in protobuf only, so the app decodes the response itself ([`SafeBrowsing.kt`](app/src/main/java/com/example/url_detection/data/SafeBrowsing.kt)).
+- Results are cached in memory and the call has a short timeout. Any error falls back to the on-device verdict, so the app never fails because of the network.
+- **Privacy:** with the online check on, the full URL you check is sent to Google. You can turn the online check off in **Profile**. Everything else, including history, stays on the device.
 
-### **Final Model (Trained on Full Dataset)**
+## The model
 
-| **Epoch** | **Validation Accuracy** | **Validation Loss** | **Observation** |
-|------------|--------------------------|---------------------|-----------------|
-| 1 | 0.9554 | 0.1149 | Initial convergence |
-| 2 | 0.9606 | 0.1040 | Significant improvement |
-| 3 | 0.9622 | 0.1015 | Peak performance (best weights) |
-| 4 | 0.9632 | 0.1054 | Slight overfitting begins |
-| 5 | 0.9623 | 0.1136 | Stable but no improvement |
-| 6 | 0.9624 | 0.1204 | Early stopping triggered (best epoch: 3) |
+The detection model is a **Feed-Forward Neural Network (FNN)** built with Keras and converted to TensorFlow Lite for on-device inference.
 
-**Final Selected Model Performance (Best Epoch = 3):**
-- **Validation Accuracy:** 0.9622  
-- **Validation F1-Score:** ≈ 0.962  
-- **Loss:** 0.1015  
-- **Training Time:** ~90–100 seconds per epoch  
+### Input: TF-IDF on character n-grams
 
----
+Each URL is turned into a vector with **TF-IDF over character 3- to 5-grams**. The vocabulary has **5,000 n-grams** (`tfidf_data.json`). Character n-grams pick up the small tricks used in phishing URLs, such as `paypa1` instead of `paypal`.
+
+### Architecture
+
+| Layer | Description |
+|---|---|
+| Input | 5,000 TF-IDF features |
+| Dense (64, ReLU) | Learns higher-level URL representations |
+| Dense (32, ReLU) | Extracts non-linear patterns |
+| Dense (1, Sigmoid) | Output score (the app converts it to the probability of being malicious) |
+
+Trained with binary cross-entropy, the Adam optimizer and early stopping.
+
+### Static URL features
+
+Following the dataset methodology in [DOI: 10.17632/hx4m73v2sf.2](https://doi.org/10.17632/hx4m73v2sf.2), v1 described 16 static URL features (URL length, IP address, dot count, HTTPS, entropy, subdomain count, and others).
+In v2, four of them are computed in the app and shown on the *Why this result* card: **HTTPS**, **IP address as domain**, **subdomain count** and **URL randomness** (Shannon entropy).
+These are for explanation only. The TF-IDF vector is the model's input.
+
+### Dataset
+
+[Grambeddings Dataset](https://web.cs.hacettepe.edu.tr/~selman/grambeddings-dataset/), a balanced set of benign and phishing URLs.
+
+### Results
+
+**5-fold cross-validation**
+
+| Fold | Best epoch | Val. accuracy | Val. F1 |
+|---|---|---|---|
+| 1 | 3 | 0.9615 | 0.9620 |
+| 2 | 3 | 0.9601 | 0.9603 |
+| 3 | 2 | 0.9595 | 0.9600 |
+| 4 | 3 | 0.9613 | 0.9616 |
+| 5 | 3 | 0.9615 | 0.9620 |
+| **Mean** | | **0.9607 ± 0.0008** | **0.9612 ± 0.0009** |
+
+**Final model (trained on the full dataset), best epoch 3:** validation accuracy **0.9622**, F1 ≈ **0.962**, loss **0.1015**.
+
+## Tech stack
+
+| Area | Library |
+|---|---|
+| Language / UI | Kotlin, Jetpack Compose, Material 3, Navigation Compose |
+| ML inference | TensorFlow Lite 2.13 |
+| QR scanning | CameraX, ZXing |
+| Online check | OkHttp, Google Safe Browsing API v5 |
+| Storage | Room (history), DataStore (theme and online-check setting) |
+| Design | Claude Design (screens, design tokens, pixel duck), implemented with Claude Code |
+
+## Project structure
+
+```
+app/src/main/
+├── assets/
+│   ├── Keras_NN_Traditional_Dataset_final_mem_safe.tflite   # FNN model
+│   └── tfidf_data.json                                      # TF-IDF vocabulary + IDF weights
+├── java/com/example/url_detection/
+│   ├── MainActivity.kt          # Navigation and check flow
+│   ├── UrlPredictor.kt          # TF-IDF + TFLite inference
+│   ├── data/
+│   │   ├── Verdict.kt           # Thresholds and the final-verdict rule
+│   │   ├── SafeBrowsing.kt      # Google Safe Browsing v5 client
+│   │   ├── UrlSignals.kt        # Link anatomy and "Why this result" signals
+│   │   ├── History.kt           # Room database for past checks
+│   │   └── AppSettings.kt       # Theme and online-check preference
+│   └── ui/
+│       ├── screens/             # Home, QR scanner, Analyzing, Result, History, Profile
+│       ├── components/          # Arcade-style buttons, cards, pixel art, icons
+│       └── theme/               # REST colors, type and theme
+└── res/font/                    # Bricolage Grotesque, DM Sans, JetBrains Mono
+```
+
+## Getting started
+
+### Requirements
+
+- Android Studio (recent stable version)
+- JDK 11 or newer
+- An Android device or emulator running Android 8.0 (API 26) or newer
+
+### 1. Clone and open
+
+```bash
+git clone -b v2-rest-redesign https://github.com/Elmeralex/URL-Detection-Applciation---Machine-Learning-FNN-.git
+```
+
+Open the folder in Android Studio and let Gradle sync.
+
+### 2. Add a Google Safe Browsing API key (optional)
+
+The app works without a key. Only the on-device model is used, and the Safe Browsing row shows *Unreachable*.
+
+To turn on the online check:
+
+1. In [Google Cloud Console](https://console.cloud.google.com/), create a project and enable the **Safe Browsing API**.
+2. Create an API key. Restrict it to the **Safe Browsing API** and to the Android app `com.example.url_detection` with your signing certificate's SHA-1. The app sends `X-Android-Package` and `X-Android-Cert` headers so the restriction works.
+3. Add the key to `local.properties` in the project root. This file is git-ignored, so don't commit it.
+
+```properties
+SAFE_BROWSING_API_KEY=your_api_key_here
+```
+
+The key is read into `BuildConfig.SAFE_BROWSING_API_KEY` at build time.
+
+> Google Safe Browsing is free for non-commercial use. Commercial apps should use Google's Web Risk API instead.
+
+### 3. Run
+
+Press **Run** in Android Studio, or from the command line:
+
+```bash
+./gradlew installDebug
+```
+
+### Tests
+
+```bash
+./gradlew test
+```
+
+Unit tests cover the Safe Browsing protobuf decoding and the stricter-only verdict rule.
+
+## Limitations
+
+- The model looks at the URL text only. It does not visit the page, so a clean-looking URL hosting phishing content can still score as Safe. Google Safe Browsing covers part of that gap for known threats.
+- Safe Browsing only knows about threats Google has already listed, so brand-new phishing links depend on the model.
+- The Suspicious/Dangerous thresholds (0.30 / 0.70) are starting values and can be tuned against the validation set.
+
+## Acknowledgements
+
+- Dataset: [Grambeddings](https://web.cs.hacettepe.edu.tr/~selman/grambeddings-dataset/), Hacettepe University
+- Feature methodology: [Mendeley Data, DOI 10.17632/hx4m73v2sf.2](https://doi.org/10.17632/hx4m73v2sf.2)
+- Threat intelligence: [Google Safe Browsing](https://developers.google.com/safe-browsing)
+- UI design: made with Claude Design; implementation and Safe Browsing integration with Claude Code
+
+## License
+
+[MIT](LICENSE)
